@@ -14,5 +14,6 @@ COPY app.py .
 
 # Comando para rodar a API usando o Gunicorn (Servidor de Produção)
 # Usando $PORT para maior compatibilidade com Render.
-CMD ["/bin/sh", "-c", "..."]
+CMD ["/bin/sh", "-c", "gunicorn --bind 0.0.0.0:$PORT app:app"]
+
 
