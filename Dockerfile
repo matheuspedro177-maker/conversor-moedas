@@ -12,8 +12,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia os arquivos da API
 COPY app.py .
 
-# Comando para rodar a API usando o Gunicorn (Servidor de Produção)
-# Usando $PORT para maior compatibilidade com Render.
-CMD ["/bin/sh", "-c", "gunicorn --bind 0.0.0.0:$PORT app:app"]
+# Comando final (CMD): Usa 'python -m gunicorn' para garantir que o Gunicorn seja encontrado
+# e utiliza a sintaxe de shell dentro do bind para expandir a variável $PORT.
+# O Gunicorn agora será iniciado pelo Python, resolvendo o problema de PATH.
+CMD ["/bin/sh", "-c", "python -m gunicorn --bind 0.0.0.0:$PORT app:app"]
 
 
