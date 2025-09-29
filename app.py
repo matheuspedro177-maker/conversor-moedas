@@ -31,7 +31,7 @@ app = Flask(__name__)
 
 # SEGURANÇA: Carrega a API_KEY de uma variável de ambiente 'EXCHANGE_RATE_API_KEY'.
 # Use a chave hardcoded apenas como fallback DE TESTE, mas NUNCA em produção.
-API_KEY = os.getenv('EXCHANGE_RATE_API_KEY', '2da6e97f5ff1cdf4b2e4f612') 
+API_KEY = os.getenv('EXCHANGE_RATE_API_KEY', '678ec91be6-b651236559-t3cwxw') 
 
 # ----------------------------------------------------
 # Funções de Suporte
@@ -252,3 +252,4 @@ if __name__ == '__main__':
     host = '0.0.0.0'
     print(f"🚀 Iniciando servidor Flask em http://{host}:{port}")
     app.run(host=host, port=port, debug=True)
+
