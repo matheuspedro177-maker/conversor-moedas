@@ -1,23 +1,21 @@
 from flask import Flask, request, jsonify, render_template_string
 import requests
-import redis
 import json
 
 app = Flask(__name__)
 
-API_KEY = '2da6e97f5ff1cdf4b2e4f612'  # 2da6e97f5ff1cdf4b2e4f612
+API_KEY = '2da6e97f5ff1cdf4b2e4f612'  # Chave da ExchangeRate API
 
-# Função para gerar URL da API com base na moeda de origem
+# Função para gerar a URL da API externa
 def get_url(moeda_origem):
     return f'https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{moeda_origem}'
 
-# Conectar ao Redis (nome do serviço no docker-compose é 'redis')
-cache = redis.Redis(host='redis', port=6379, db=0, decode_responses=True)
-
+# =======> ROTA PRINCIPAL (verifica se está online)
 @app.route('/')
 def index():
     return jsonify({'mensagem': 'API Conversor de Moedas funcionando com cotação real! 🚀'})
 
+# =======> ROTA JSON
 @app.route('/converter', methods=['GET'])
 def converter():
     valor = request.args.get('valor', type=float)
@@ -30,13 +28,8 @@ def converter():
     origem = origem.upper()
     destino = destino.upper()
 
-    # Verifica cache primeiro
-    chave_cache = f"{valor}_{origem}_{destino}"
-    resultado_cache = cache.get(chave_cache)
-    if resultado_cache:
-        return jsonify(json.loads(resultado_cache))
+    # ===== Cache REMOVIDO para compatibilidade com Render.com
 
-    # Buscar as taxas atuais com base na moeda de origem
     try:
         resposta = requests.get(get_url(origem), timeout=5)
         resposta.raise_for_status()
@@ -52,7 +45,6 @@ def converter():
     if destino not in taxas:
         return jsonify({'erro': 'Moeda inválida. Use códigos válidos como USD, EUR, BRL'}), 400
 
-    # Converter valor
     valor_convertido = valor * taxas[destino]
 
     resultado = {
@@ -62,14 +54,9 @@ def converter():
         'valor_convertido': round(valor_convertido, 2)
     }
 
-    # Salvar no cache por 1 hora
-    cache.setex(chave_cache, 3600, json.dumps(resultado))
-
     return jsonify(resultado)
 
-
-# NOVO ENDPOINT COM HTML
-
+# =======> ROTA HTML
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -131,6 +118,6 @@ def converter_html():
         valor_convertido=valor_convertido
     )
 
+# =======> EXECUTAR A API
 if __name__ == '__main__':
-
     app.run(host='0.0.0.0', debug=True)
