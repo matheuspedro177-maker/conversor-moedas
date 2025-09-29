@@ -13,5 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 
 # Comando para rodar a API usando o Gunicorn (Servidor de Produção)
-# Isso substitui o CMD ["python", "app.py"] que estava causando o erro 404/Failed Deploy.
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Usando $PORT para maior compatibilidade com Render.
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
