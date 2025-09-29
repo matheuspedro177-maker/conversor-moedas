@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-API_KEY = '2da6e97f5ff1cdf4b2e4f612'  # sua chave da API
+API_KEY = '2da6e97f5ff1cdf4b2e4f612'  # 2da6e97f5ff1cdf4b2e4f612
 
 # Função para gerar URL da API com base na moeda de origem
 def get_url(moeda_origem):
@@ -132,4 +132,5 @@ def converter_html():
     )
 
 if __name__ == '__main__':
+
     app.run(host='0.0.0.0', debug=True)
